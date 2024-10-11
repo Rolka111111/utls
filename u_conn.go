@@ -114,10 +114,10 @@ func (uconn *UConn) buildHandshakeState(loadSession bool) error {
 		}
 
 		uconn.HandshakeState.Hello = hello.getPublicPtr()
-		if ecdheKey, ok := keySharePrivate.(*ecdh.PrivateKey); ok {
-			uconn.HandshakeState.State13.EcdheKey = ecdheKey
-		} else if kemKey, ok := keySharePrivate.(*kemPrivateKey); ok {
+		if kemKey, ok := keySharePrivate.(*kemPrivateKey); ok {
 			uconn.HandshakeState.State13.KEMKey = kemKey.ToPublic()
+		} else if ecdheKey, ok := keySharePrivate.(*ecdh.PrivateKey); ok {
+			uconn.HandshakeState.State13.EcdheKey = ecdheKey
 		} else {
 			return fmt.Errorf("uTLS: unknown keySharePrivate type: %T", keySharePrivate)
 		}

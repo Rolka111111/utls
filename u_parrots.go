@@ -2631,10 +2631,11 @@ func (uconn *UConn) ApplyPreset(p *ClientHelloSpec) error {
 		return err
 	}
 	uconn.HandshakeState.Hello = privateHello.getPublicPtr()
-	if ecdheKey, ok := clientKeySharePrivate.(*ecdh.PrivateKey); ok {
-		uconn.HandshakeState.State13.EcdheKey = ecdheKey
-	} else if kemKey, ok := clientKeySharePrivate.(*kemPrivateKey); ok {
+
+	if kemKey, ok := clientKeySharePrivate.(*kemPrivateKey); ok {
 		uconn.HandshakeState.State13.KEMKey = kemKey.ToPublic()
+	}else if ecdheKey, ok := clientKeySharePrivate.(*ecdh.PrivateKey); ok {
+		uconn.HandshakeState.State13.EcdheKey = ecdheKey
 	}
 	uconn.HandshakeState.State13.KeySharesParams = NewKeySharesParameters()
 	hello := uconn.HandshakeState.Hello
@@ -2724,7 +2725,6 @@ func (uconn *UConn) ApplyPreset(p *ClientHelloSpec) error {
 				}
 			}
 		case *KeyShareExtension:
-			preferredCurveIsSet := false
 			for i := range ext.KeyShares {
 				curveID := ext.KeyShares[i].Group
 				if isGREASEUint16(uint16(curveID)) { // just in case the user set a GREASE value instead of unGREASEd
@@ -2748,11 +2748,7 @@ func (uconn *UConn) ApplyPreset(p *ClientHelloSpec) error {
 					}
 					uconn.HandshakeState.State13.KeySharesParams.AddKemKeypair(curveID, sk.secretKey, pk)
 					ext.KeyShares[i].Data = packedPk
-					if !preferredCurveIsSet {
-						// only do this once for the first non-grease curve
-						uconn.HandshakeState.State13.KEMKey = sk.ToPublic()
-						preferredCurveIsSet = true
-					}
+					uconn.HandshakeState.State13.KEMKey = sk.ToPublic()
 				} else {
 					ecdheKey, err := generateECDHEKey(uconn.config.rand(), curveID)
 					if err != nil {
@@ -2761,11 +2757,7 @@ func (uconn *UConn) ApplyPreset(p *ClientHelloSpec) error {
 					}
 					uconn.HandshakeState.State13.KeySharesParams.AddEcdheKeypair(curveID, ecdheKey, ecdheKey.PublicKey())
 					ext.KeyShares[i].Data = ecdheKey.PublicKey().Bytes()
-					if !preferredCurveIsSet {
-						// only do this once for the first non-grease curve
-						uconn.HandshakeState.State13.EcdheKey = ecdheKey
-						preferredCurveIsSet = true
-					}
+					uconn.HandshakeState.State13.EcdheKey = ecdheKey
 				}
 			}
 		case *SupportedVersionsExtension:

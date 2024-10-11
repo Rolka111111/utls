@@ -288,10 +288,10 @@ func (c *Conn) clientHandshake(ctx context.Context) (err error) {
 			keySharesParams: NewKeySharesParameters(), // [uTLS]
 		}
 
-		if ecdheKey, ok := keySharePrivate.(*ecdh.PrivateKey); ok {
-			hs.ecdheKey = ecdheKey
-		} else if kemKey, ok := keySharePrivate.(*kemPrivateKey); ok {
+		if kemKey, ok := keySharePrivate.(*kemPrivateKey); ok {
 			hs.kemKey = kemKey
+		} else if ecdheKey, ok := keySharePrivate.(*ecdh.PrivateKey); ok {
+			hs.ecdheKey = ecdheKey
 		} else {
 			return fmt.Errorf("tls: unknown key share type %T", keySharePrivate)
 		}
