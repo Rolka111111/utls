@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/refraction-networking/utls/internal/quicvarint/protocol"
+	"github.com/LuckyLuke-a/utls/internal/quicvarint/protocol"
 )
 
 // taken from the QUIC draft
