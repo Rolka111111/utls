@@ -11,7 +11,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/LuckyLuke-a/utls/dicttls"
+	"github.com/Rolka111111/utls/dicttls"
 	"golang.org/x/crypto/cryptobyte"
 )
 
