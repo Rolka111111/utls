@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/LuckyLuke-a/utls/testenv"
+	"github.com/Rolka111111/utls/testenv"
 )
 
 // Tests that the linker is able to remove references to the Client or Server if unused.
