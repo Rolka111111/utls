@@ -1,4 +1,4 @@
-module github.com/LuckyLuke-a/utls
+module github.com/Rolka111111/utls
 
 go 1.21
 
